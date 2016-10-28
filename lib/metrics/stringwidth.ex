@@ -3,7 +3,9 @@ defmodule Fonts.Metrics.StringWidth do
   @doc """
   Returns the width of the provided string and for the provided font for 1 em. Width in points can be calculated by muptipling by the point size.
   """
-  def stringwidth(font, fontname, string) do
+  def string_width(font_name, string, points_size) do
+    font_entry = Fonts.FontServer.get_font_entry(font_name)
+    font = font_entry["Font"]
     units_per_em = font["Tables"]["head"]["Units Per Em"]
 
     # - Get list of glyphid's
@@ -15,7 +17,7 @@ defmodule Fonts.Metrics.StringWidth do
       |> Enum.map(&(Fonts.Tables.Hmtx.glyph_metrics_for_index(&1,font)))
       |> calc_string_width(:true,0)
 
-      glyph_design_units / units_per_em
+      glyph_design_units / units_per_em * points_size
   end
 
   # Following does not remove the right side bearing from the last glphy in

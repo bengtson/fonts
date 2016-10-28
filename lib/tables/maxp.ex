@@ -1,7 +1,7 @@
 defmodule Fonts.Tables.Maxp do
 
   def parse_table(checksum,offset,length,state) do
-    IO.puts "'maxp'" <> " : Parsing"
+#    IO.puts "'maxp'" <> " : Parsing"
 
     %{"Binary" => binary, "Parser" => parser, "Font" => font} = state
     <<

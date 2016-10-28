@@ -1,7 +1,7 @@
 defmodule Fonts.Tables.Hhea do
 
   def parse_table(checksum,offset,length,state) do
-    IO.puts "'hhea'" <> " : Parsing"
+#    IO.puts "'hhea'" <> " : Parsing"
 
     %{"Binary" => binary, "Parser" => parser, "Font" => font} = state
     <<

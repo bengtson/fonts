@@ -21,10 +21,10 @@ defmodule Fonts.Tables.Hmtx do
     maxp_table = table_map["maxp"]
     cond do
       hhea_table == nil ->
-        IO.puts "'hmtx' : Skipping - Wait For 'hhea'"
+#        IO.puts "'hmtx' : Skipping - Wait For 'hhea'"
         {:skip}
       maxp_table == nil ->
-        IO.puts "'hmtx' : Skipping - Wait For 'maxp'"
+#        IO.puts "'hmtx' : Skipping - Wait For 'maxp'"
         {:skip}
       true ->
         gen_table(checksum,offset,length,state)
@@ -32,7 +32,7 @@ defmodule Fonts.Tables.Hmtx do
   end
 
   def gen_table(checksum,offset,length,state) do
-    IO.puts "'hmtx'" <> " : Parsing"
+#    IO.puts "'hmtx'" <> " : Parsing"
 
     %{"Binary" => binary, "Parser" => parser, "Font" => font} = state
 

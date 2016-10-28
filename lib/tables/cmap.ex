@@ -10,7 +10,7 @@ defmodule Fonts.Tables.Cmap do
   end
 
   def parse_table(checksum,offset,length,state) do
-    IO.puts "'cmap'" <> " : Parsing"
+#    IO.puts "'cmap'" <> " : Parsing"
 
     %{"Binary" => binary, "Parser" => parser, "Font" => font} = state
     <<

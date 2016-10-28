@@ -2,7 +2,9 @@
 
 Provides various font services useful for text layout or generating text.
 
-## services
+This is a framework that has been tested with a single font 'Minion Pro - Regular'. It will be expanded as new functionality is required or as new fonts are needed. The current code may work for other fonts but no testing has been done.
+
+## Services
 
 The following services are planned and ordered according to their likely implementation:
 
@@ -10,8 +12,14 @@ The following services are planned and ordered according to their likely impleme
 
 ## Todo
 
-- Handle loading of multiple fonts.
 - Have prescreening of fonts in a directory.
+  Handle strings as Unicode, not ASCII.
+
+## Commit Comments
+
+- GenServer now stores fonts that have been loaded.
+  Added MIT License
+-
 
 ## Installation
 
@@ -21,7 +29,7 @@ If [available in Hex](https://hex.pm/docs/publish), the package can be installed
 
     ```elixir
     def deps do
-      [{:fonts, "~> 0.1.0"}]
+      [{:fonts, "~> 0.2.0"}]
     end
     ```
 

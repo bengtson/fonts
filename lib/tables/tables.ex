@@ -68,7 +68,7 @@ defmodule Fonts.Tables.Tables do
     Fonts.Tables.Name.parse_table(checksum,offset,length,state)
   end
   def parse_table(table_name,checksum,offset,length,state) do
-    IO.puts "'" <> table_name <> "'" <> " : Unknown Table Type"
+#    IO.puts "'" <> table_name <> "'" <> " : Unknown Table Type"
     { :ok, state }
   end
 

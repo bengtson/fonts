@@ -1,7 +1,7 @@
 defmodule Fonts.Tables.Head do
 
   def parse_table(checksum,offset,length,state) do
-    IO.puts "'head'" <> " : Parsing"
+#    IO.puts "'head'" <> " : Parsing"
     %{"Binary" => binary, "Parser" => parser, "Font" => font} = state
     <<
       _ :: binary-size(offset),
