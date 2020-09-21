@@ -1,82 +1,88 @@
 defmodule Fonts.FontServer do
   use GenServer
+
   @moduledoc """
-  The FontStore holds information about available fonts. Some fonts may have been fully parsed while others may simply be 'noticed' in the system but not yet called for use.
+  The FontStore holds information about available fonts. Some fonts may have been fully parsed while
+  others may simply be 'noticed' in the system but not yet called for use.
 
-  The Font Server will load fonts however, once loaded, the server is not longer needed for obtaining information about the font. For instance, 'string width' is handled without services from the font.
+  The Font Server will load fonts however, once loaded, the server is not longer needed for
+  obtaining information about the font. For instance, 'string width' is handled without services
+  from the font.
 
-  State font server is shown:
-
-    %{ "Font List => %{} }
-
-  Each entry in the "Font List" is:
-
-    %{ "Filename" => ..,
-       "Fontname" => ..,
-       "Binary" => ..,      # Font file data.
-       "Font" => ..,        # Parsed font data.
-       ... }
-
+  Fonts are referenced with the server as {family, subfamily} for example ...
+    {Source Sans Pro, Regular}
+  This is referred to as 'fontkey'.
   """
 
   @doc """
   Starts the Font Server. This is started but will not have any fonts until one is loaded by the user.
   """
   def start_link do
-    {:ok, _} = GenServer.start_link(__MODULE__, :ok, [name: FontServer])
+    {:ok, _} = GenServer.start_link(__MODULE__, :ok, name: FontServer)
   end
 
   @doc """
   Loads the font in the specified font file. If the font can be successfully loaded it will be added as a font available to the Font Server. If there is an error, the error message will be returned.
   """
-  @spec load_font(String.t) :: { :ok, Map } | { :error, String.t }
-  def load_font font_path do
+  def load(font_path) do
     GenServer.call(FontServer, {:load, font_path})
+  end
+
+  @doc """
+  Removes the specified font from the server.
+  """
+  def remove(fontkey) do
+    GenServer.call(FontServer, {:remove, fontkey})
+  end
+
+  def remove_all() do
+    GenServer.call(FontServer, :remove_all)
   end
 
   @doc """
   Returns the entry for the font name speciied.
   """
-  def get_font_entry(font_name) do
-    GenServer.call(FontServer, {:entry, font_name})
+  def entry(fontkey) do
+    GenServer.call(FontServer, {:entry, fontkey})
   end
 
   @doc """
-  Returns a list of the fonts that are loaded into the Font Server.
+  Returns a list of the font keys that are loaded into the Font Server.
   """
-  @spec get_font_list :: [ List ]
-  def get_font_list do
+  def list do
     GenServer.call(FontServer, :list)
   end
 
   @doc """
   Returns the full state of the Font Server. This would generally be used only for diagnostic purposes.
   """
-  @spec get_state :: { Map }
-  def get_state do
+  def state do
     GenServer.call(FontServer, :state)
   end
 
-  def handle_call({:entry, font_name}, _from, state) do
-    entry = state["Font List"][font_name]
+  def handle_call({:entry, fontkey}, _from, state) do
+    entry = state.fonts[fontkey]
     {:reply, entry, state}
   end
 
   def handle_call({:load, font_path}, _from, state) do
-    case font_loader font_path do
+    case font_loader(font_path) do
       {:ok, font} ->
-        newf = Map.merge(state["Font List"],font)
-#        IO.inspect newf
-        state = put_in state["Font List"],newf
+        newf = Map.merge(state.fonts, font)
+        #        IO.inspect(newf)
+        state = put_in(state.fonts, newf)
         {:reply, {:ok, font}, state}
+
       {:error, message} ->
         {:reply, {:error, message}, state}
     end
   end
 
   def handle_call(:list, _from, state) do
-    list = state["Font List"]
-    |> Map.keys
+    list =
+      state.fonts
+      |> Map.keys()
+
     {:reply, list, state}
   end
 
@@ -84,8 +90,17 @@ defmodule Fonts.FontServer do
     {:reply, state, state}
   end
 
+  def handle_call({:remove, fontkey}, _from, state) do
+    fonts = Map.delete(state.fonts, fontkey)
+    {:reply, :ok, %{state | fonts: fonts}}
+  end
+
+  def handle_call(:remove_all, _from, _state) do
+    {:reply, :ok, %{fonts: %{}}}
+  end
+
+  # Given the path to the font file, this will load the specified font.
   defp font_loader(font_path) do
-    font_name = Path.rootname(Path.basename(font_path))
     case File.read(font_path) do
       {:ok, binary} ->
         font = %{
@@ -98,23 +113,48 @@ defmodule Fonts.FontServer do
             "Tables" => %{}
           }
         }
-        x = font
-          |> Fonts.Tables.Offset.get_offset_table
-          |> Fonts.Tables.Tables.get_table_list
-          |> Fonts.Tables.Tables.parse_tables
-        x = Map.merge(x,%{"File Name" => font_path})
-        {:ok, %{ font_name => x} }
-#          |> IO.inspect
+
+        x =
+          font
+          |> Fonts.Tables.Offset.get_offset_table()
+          |> Fonts.Tables.Tables.get_table_list()
+          |> Fonts.Tables.Tables.parse_tables()
+
+        fontkey = fontkey(x)
+        x = Map.merge(x, %{"File Name" => font_path})
+        x = Map.merge(x, %{"Font Key" => fontkey})
+
+        IO.inspect(fontkey, label: :fontkey)
+        {:ok, %{fontkey => x}}
+
+      #          |> IO.inspect
       _ ->
         {:error, "Couldn't open #{font_path}"}
     end
   end
 
+  # Given the decoded font, this generates the font key based on the
+  # font family and subfamily.
+  defp fontkey(font) do
+    namerecords = font["Font"]["Tables"]["name"]["Name Records"]
+
+    fontfamily =
+      namerecords
+      |> Enum.find(fn r -> r["Name ID"] == 1 end)
+      |> Map.fetch!("Name")
+
+    fontsubfamily =
+      namerecords
+      |> Enum.find(fn r -> r["Name ID"] == 2 end)
+      |> Map.fetch!("Name")
+
+    {fontfamily, fontsubfamily}
+  end
+
   @doc """
   Called by the GenServer when it is started.
   """
-  def init (:ok) do
-    {:ok, %{ "Font List" => %{} } }
+  def init(:ok) do
+    {:ok, %{fonts: %{}}}
   end
-
 end

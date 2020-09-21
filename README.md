@@ -10,16 +10,30 @@ The following services are planned and ordered according to their likely impleme
 
 - Font Metrics - given a string, will return the metrics for the string.
 
+## References
+
+The following link is a good reference on the Open Type font format.
+
+https://docs.microsoft.com/en-us/typography/opentype/spec/otff
+https://developer.apple.com/fonts/TrueType-Reference-Manual/
+
+## Complete
+[x] Pickup info from Name table.
+[x] Change font key from file name to {fontfamily, fontsubfamily}
+
 ## Todo
+[ ] Get character width based on sub-table type 4.
+[ ] Get character width based on sub-table type 12.
+[ ] Load collection font files ... files with multiple fonts.
+[ ] Handle kerning entries.
+[ ] Handle automatic loading or scanning of fonts on the system.
 
 - Have prescreening of fonts in a directory.
-  Handle strings as Unicode, not ASCII.
 
 ## Commit Comments
 
 - GenServer now stores fonts that have been loaded.
-  Added MIT License
--
+
 
 ## Installation
 
