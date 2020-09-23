@@ -1,7 +1,7 @@
 defmodule Fonts.Tables.Name do
-  def parse_table(checksum, offset, length, state) do
+  def parse_table(_checksum, offset, _length, state) do
     #    IO.puts "'name'" <> " : Parsing"
-    %{"Binary" => binary, "Parser" => parser, "Font" => font} = state
+    %{"Binary" => binary, "Parser" => _parser, "Font" => font} = state
 
     <<
       _::binary-size(offset),
@@ -10,23 +10,6 @@ defmodule Fonts.Tables.Name do
       stringoffset::unsigned-integer-size(16),
       rest::binary
     >> = binary
-
-    # Get the sub-tables in the cmap.
-    # encoding_maps = get_format_tables(number_tables, offset, binary)
-
-    # table = %{
-    #   "name" => %{
-    #     "Format" => format,
-    #     "Records" => count,
-    #     "String Offset" => stringoffset
-    #     # "Table Length" => length,
-    #     # "Table Offset" => offset,
-    #     # "Table Checksum" => checksum,
-    #     # "Table Version" => Integer.to_string(table_version),
-    #     # "Number Of Tables" => number_tables,
-    #     # "Encoding Tables" => encoding_maps
-    #   }
-    # }
 
     recordsize = count * 12
 

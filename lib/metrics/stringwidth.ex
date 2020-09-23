@@ -31,9 +31,9 @@ defmodule Fonts.Metrics.StringWidth do
   #   calculated width
 
   # Handles a nil list returning 0 width.
-  defp calc_string_width([], _, true, _) do
-    0
-  end
+  # defp calc_string_width([], _, true, _) do
+  #   0
+  # end
 
   # Handles a list with only a single element. Calculates width.
   defp calc_string_width([{advance_width, left_side_bearing} | []], true, _) do
@@ -46,7 +46,7 @@ defmodule Fonts.Metrics.StringWidth do
   end
 
   # Handles the last element in the list. Must preceed 'middle'
-  defp calc_string_width([{advance_width, left_side_bearing} | []], false, width) do
+  defp calc_string_width([{advance_width, _left_side_bearing} | []], false, width) do
     width + advance_width
   end
 
