@@ -20,10 +20,12 @@ https://developer.apple.com/fonts/TrueType-Reference-Manual/
 ## Complete
 [x] Pickup info from Name table.
 [x] Change font key from file name to {fontfamily, fontsubfamily}
+[x] Get character width based on sub-table type 4.
+[x] sub-table 'offset' selector not coded.
+[x] Add load time for a font.
+[x] Get character width based on sub-table type 12.
 
 ## Todo
-[ ] Get character width based on sub-table type 4.
-[ ] Get character width based on sub-table type 12.
 [ ] Load collection font files ... files with multiple fonts.
 [ ] Handle kerning entries.
 [ ] Handle automatic loading or scanning of fonts on the system.

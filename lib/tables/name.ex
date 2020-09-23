@@ -14,19 +14,19 @@ defmodule Fonts.Tables.Name do
     # Get the sub-tables in the cmap.
     # encoding_maps = get_format_tables(number_tables, offset, binary)
 
-    table = %{
-      "name" => %{
-        "Format" => format,
-        "Records" => count,
-        "String Offset" => stringoffset
-        # "Table Length" => length,
-        # "Table Offset" => offset,
-        # "Table Checksum" => checksum,
-        # "Table Version" => Integer.to_string(table_version),
-        # "Number Of Tables" => number_tables,
-        # "Encoding Tables" => encoding_maps
-      }
-    }
+    # table = %{
+    #   "name" => %{
+    #     "Format" => format,
+    #     "Records" => count,
+    #     "String Offset" => stringoffset
+    #     # "Table Length" => length,
+    #     # "Table Offset" => offset,
+    #     # "Table Checksum" => checksum,
+    #     # "Table Version" => Integer.to_string(table_version),
+    #     # "Number Of Tables" => number_tables,
+    #     # "Encoding Tables" => encoding_maps
+    #   }
+    # }
 
     recordsize = count * 12
 
@@ -54,8 +54,6 @@ defmodule Fonts.Tables.Name do
             "Length" => length,
             "Offset" => stringoffset
           }
-
-    IO.inspect(names, label: :names)
 
     recordlist =
       recordlist

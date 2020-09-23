@@ -101,6 +101,8 @@ defmodule Fonts.FontServer do
 
   # Given the path to the font file, this will load the specified font.
   defp font_loader(font_path) do
+    start_time_ms = System.monotonic_time(:microsecond)
+
     case File.read(font_path) do
       {:ok, binary} ->
         font = %{
@@ -123,8 +125,10 @@ defmodule Fonts.FontServer do
         fontkey = fontkey(x)
         x = Map.merge(x, %{"File Name" => font_path})
         x = Map.merge(x, %{"Font Key" => fontkey})
+        loadtime = System.monotonic_time(:microsecond) - start_time_ms
+        x = Map.merge(x, %{loadtime: loadtime})
+        x = Map.delete(x, "Binary")
 
-        IO.inspect(fontkey, label: :fontkey)
         {:ok, %{fontkey => x}}
 
       #          |> IO.inspect

@@ -18,17 +18,18 @@ defmodule Fonts.Test do
   end
 
   def sw() do
-    font1 = "/Users/bengm0ra/Library/Fonts/Georgia.ttf"
-    Fonts.FontServer.load(font1)
+    # font1 = "/Users/bengm0ra/Library/Fonts/Georgia.ttf"
+    # Fonts.FontServer.load(font1)
 
     width =
       Fonts.string_width(
-        #        {"Source Sans Pro", "Regular"},
-        {"Georgia", "Regular"},
+        # {"Source Sans Pro", "Regular"},
+        {"Minion Pro", "Regular"},
+        # {"Georgia", "Regular"},
         "Tack Så Mycket : The quick brown fox jumped over the lazy dog.",
         12.0
       )
 
-    IO.puts("String Width: #{width}, Expected: #{314.0}")
+    IO.puts("String Width: #{width}")
   end
 end

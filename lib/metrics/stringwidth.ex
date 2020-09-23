@@ -13,10 +13,8 @@ defmodule Fonts.Metrics.StringWidth do
     glyph_design_units =
       string
       |> String.codepoints()
-      |> IO.inspect(label: :charlist)
       |> Fonts.Tables.Cmap.glyph_indexes(font)
       |> Enum.map(&Fonts.Tables.Hmtx.glyph_metrics_for_index(&1, font))
-      |> IO.inspect(label: :metrics_widths)
       |> calc_string_width(true, 0)
 
     glyph_design_units / units_per_em * points_size
